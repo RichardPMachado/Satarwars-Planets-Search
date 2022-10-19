@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import AppContext from './appContext';
 
 function AppProvider({ children }) {
-  // const [name, setName] = useState('');
   // const [gender, setGender] = useState('');
   const [apiResults, setApiResults] = useState([]);
+  const [nameFiltered, setNameFiltered] = useState('');
 
   // const handleApiResults = ({target}) => {
   //   setName(target.name)
@@ -19,7 +19,7 @@ function AppProvider({ children }) {
       try {
         const response = await fetch('https://swapi.dev/api/planets');
         const { results } = await response.json();
-        setApiResults(results.map((e) => {
+        setApiResults(results?.map((e) => {
           delete e.residents;
           return e;
         }));
@@ -30,9 +30,13 @@ function AppProvider({ children }) {
     requestAPI();
   }, []);
 
+  const handleNameFiltered = ({ target }) => setNameFiltered(target.value);
+
   const contexto = useMemo(() => ({
     apiResults,
-  }), [apiResults]);
+    nameFiltered,
+    handleNameFiltered,
+  }), [apiResults, nameFiltered]);
   return (
     <AppContext.Provider value={ contexto }>
       {children}

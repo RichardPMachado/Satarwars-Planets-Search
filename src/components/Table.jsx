@@ -24,7 +24,7 @@ export default function Table() {
       </thead>
       <tbody>
         {
-          apiResults.map(({
+          apiResults?.map(({
             name,
             rotation_period: rotation,
             orbital_period: orbital,
