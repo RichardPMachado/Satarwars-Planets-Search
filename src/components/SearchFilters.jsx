@@ -3,7 +3,7 @@ import AppContext from '../Context/appContext';
 
 function SearchFilters() {
   const { handleNameFiltered, NameFiltered, handleColumnSelect,
-    handleComparasionSelect, handleApiFilter,
+    handleComparasionSelect, handleApiFilter, valueInput,
     handleValueInput } = useContext(AppContext);
   return (
     <div>
@@ -55,7 +55,7 @@ function SearchFilters() {
             type="number"
             id="value-filter"
             name="value-filter"
-            value={ NameFiltered }
+            value={ valueInput }
             onChange={ handleValueInput }
           />
         </label>
