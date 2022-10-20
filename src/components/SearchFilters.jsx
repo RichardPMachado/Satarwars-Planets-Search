@@ -44,7 +44,7 @@ function SearchFilters() {
         <label htmlFor="value-filter">
           <input
             data-testid="value-filter"
-            type="text"
+            type="number"
             id="value-filter"
             name="value-filter"
             value={ NameFiltered }
