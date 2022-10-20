@@ -2,15 +2,18 @@ import React, { useContext, useMemo } from 'react';
 import AppContext from '../Context/appContext';
 
 function Table() {
-  const { apiResults, nameFiltered } = useContext(AppContext);
+  const { nameFiltered, apiFilter, apiResults,
+  } = useContext(AppContext);
 
   // ===================== Técnica de como Filtrar pesquisa com otimização =====================
 
   const apiResultsFiltered = useMemo(() => {
     const LowerSearch = nameFiltered.toLowerCase();
-    return apiResults?.filter(({ name }) => name
-      .toLowerCase().includes(LowerSearch));
-  }, [apiResults, nameFiltered]);
+    return apiFilter.length === 0 ? apiResults?.filter(({ name }) => name
+      .toLowerCase().includes(LowerSearch))
+      : apiFilter?.filter(({ name }) => name
+        .toLowerCase().includes(LowerSearch));
+  }, [apiFilter, nameFiltered, apiResults]);
   // referencia para fazer o filtro com performance https://www.youtube.com/watch?v=5Tq4-UgPTDs
 
   // ============================================================================================

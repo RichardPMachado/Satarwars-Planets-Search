@@ -6,6 +6,10 @@ function AppProvider({ children }) {
   // const [gender, setGender] = useState('');
   const [apiResults, setApiResults] = useState([]);
   const [nameFiltered, setNameFiltered] = useState('');
+  const [columnSelect, setColumnSelect] = useState('population');
+  const [comparasionSelect, setComparasionSelect] = useState('maior que');
+  const [valueInput, setValueInput] = useState(0);
+  const [apiFilter, setApiFilter] = useState([]);
 
   // const handleApiResults = ({target}) => {
   //   setName(target.name)
@@ -32,11 +36,43 @@ function AppProvider({ children }) {
 
   const handleNameFiltered = ({ target }) => setNameFiltered(target.value);
 
+  const handleColumnSelect = ({ target }) => setColumnSelect(target.value);
+
+  const handleComparasionSelect = ({ target }) => setComparasionSelect(target.value);
+
+  const handleValueInput = ({ target }) => setValueInput(target.value);
+
+  const handleApiFilter = () => {
+    const filterPlanet = apiResults
+      .filter((element) => {
+        switch (comparasionSelect) {
+        case 'maior que':
+          return Number(element[columnSelect]) > Number(valueInput);
+        case 'menor que':
+          return Number(element[columnSelect]) < Number(valueInput);
+        case 'igual a':
+          return Number(element[columnSelect]) === Number(valueInput);
+        default:
+          return element;
+        }
+      });
+    setApiFilter(filterPlanet);
+  };
+
   const contexto = useMemo(() => ({
     apiResults,
     nameFiltered,
+    columnSelect,
+    valueInput,
+    comparasionSelect,
+    apiFilter,
     handleNameFiltered,
-  }), [apiResults, nameFiltered]);
+    handleColumnSelect,
+    handleComparasionSelect,
+    handleValueInput,
+    handleApiFilter,
+  }), [apiResults, nameFiltered, columnSelect,
+    comparasionSelect, valueInput, apiFilter]);
   return (
     <AppContext.Provider value={ contexto }>
       {children}
