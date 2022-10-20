@@ -4,6 +4,7 @@ import AppContext from '../Context/appContext';
 function SearchFilters() {
   const { handleNameFiltered, NameFiltered, handleColumnSelect,
     handleComparasionSelect, handleApiFilter, valueInput,
+    columnOptions,
     handleValueInput } = useContext(AppContext);
   return (
     <div>
@@ -29,11 +30,14 @@ function SearchFilters() {
             data-testid="column-filter"
             onChange={ handleColumnSelect }
           >
-            <option value="population">population</option>
-            <option value="orbital_period">orbital_period</option>
-            <option value="diameter">diameter</option>
-            <option value="rotation_period">rotation_period</option>
-            <option value="surface_water">surface_water</option>
+            {columnOptions.map((columnOption) => (
+              <option
+                key={ columnOption }
+                value={ columnOption }
+              >
+                { columnOption }
+              </option>
+            ))}
           </select>
         </label>
         <label htmlFor="comparison-filter">
