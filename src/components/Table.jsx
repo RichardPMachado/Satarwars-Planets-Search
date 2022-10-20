@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import AppContext from '../Context/appContext';
 
 export default function Table() {
-  const { apiResults } = useContext(AppContext);
+  const { apiResults, nameFiltered } = useContext(AppContext);
   return (
     <table>
       <thead>
@@ -24,15 +24,16 @@ export default function Table() {
       </thead>
       <tbody>
         {
-          apiResults?.map(({
+          apiResults?.filter(({ name }) => name.toLowerCase()
+            .includes(nameFiltered.toLowerCase())).map(({
             name,
-            rotation_period: rotation,
-            orbital_period: orbital,
+            rotation_period: rotationPeriod,
+            orbital_period: orbitalPeriod,
             diameter,
             climate,
             gravity,
             terrain,
-            surface_water: water,
+            surface_water: suefaceWater,
             population,
             films,
             created,
@@ -41,17 +42,17 @@ export default function Table() {
           }) => (
             <tr key={ name }>
               <td>{ name }</td>
-              <td>{ rotation }</td>
-              <td>{ orbital }</td>
+              <td>{ rotationPeriod }</td>
+              <td>{ orbitalPeriod }</td>
               <td>{ diameter }</td>
               <td>{ climate }</td>
               <td>{ gravity }</td>
               <td>{ terrain }</td>
-              <td>{ water }</td>
+              <td>{ suefaceWater }</td>
               <td>{ population }</td>
               <td>
                 <ul>
-                  {films.map((e) => (
+                  {films?.map((e) => (
                     <li key={ `${e}` }>{ e }</li>
                   ))}
                 </ul>
