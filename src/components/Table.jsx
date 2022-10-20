@@ -1,8 +1,18 @@
 import React, { useContext } from 'react';
 import AppContext from '../Context/appContext';
 
-export default function Table() {
+function Table() {
   const { apiResults, nameFiltered } = useContext(AppContext);
+
+  // ===================== Técnica de como Filtrar pesquisa com otimização =====================
+
+  const LowerSearch = nameFiltered.toLowerCase();
+
+  const apiResultsFiltered = apiResults?.filter(({ name }) => name
+    .toLowerCase().includes(LowerSearch));
+  // referencia para fazer o filtro com performance https://www.youtube.com/watch?v=5Tq4-UgPTDs
+
+  // ============================================================================================
   return (
     <table>
       <thead>
@@ -24,8 +34,7 @@ export default function Table() {
       </thead>
       <tbody>
         {
-          apiResults?.filter(({ name }) => name.toLowerCase()
-            .includes(nameFiltered.toLowerCase())).map(({
+          apiResultsFiltered.map(({
             name,
             rotation_period: rotationPeriod,
             orbital_period: orbitalPeriod,
@@ -67,3 +76,5 @@ export default function Table() {
     </table>
   );
 }
+
+export default React.memo(Table);
