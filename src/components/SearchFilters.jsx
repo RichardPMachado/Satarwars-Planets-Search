@@ -4,7 +4,7 @@ import AppContext from '../Context/appContext';
 function SearchFilters() {
   const { handleNameFiltered, NameFiltered, handleColumnSelect,
     handleComparasionSelect, filterCallback, valueInput,
-    apiResults, apiFilter, columnOptions,
+    apiResults, apiFilter, columnOptions, handleRemoveFilters,
     handleValueInput } = useContext(AppContext);
 
   const apiResultsFiltered = useMemo(() => (apiFilter.length === 0 ? apiResults
@@ -73,6 +73,13 @@ function SearchFilters() {
           onClick={ () => filterCallback(apiResultsFiltered) }
         >
           Filtrar
+        </button>
+        <button
+          type="button"
+          data-testid="button-remove-filters"
+          onClick={ handleRemoveFilters }
+        >
+          Remover Filtros
         </button>
       </section>
     </div>

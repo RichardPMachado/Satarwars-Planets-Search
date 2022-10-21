@@ -5,13 +5,13 @@ import AppContext from './appContext';
 function AppProvider({ children }) {
   const [apiResults, setApiResults] = useState([]);
   const [nameFiltered, setNameFiltered] = useState('');
-  const [columnSelect, setColumnSelect] = useState('population');
+  const [columnOptions, setColumnOptions] = useState(['population', 'orbital_period',
+    'diameter', 'rotation_period', 'surface_water']);
+  const [columnSelect, setColumnSelect] = useState(columnOptions[0]);
   const [comparasionSelect, setComparasionSelect] = useState('maior que');
   const [valueInput, setValueInput] = useState(0);
   const [apiFilter, setApiFilter] = useState([]);
   const [multfilters, setMultfilters] = useState([]);
-  const [columnOptions, setColumnOptions] = useState(['population', 'orbital_period',
-    'diameter', 'rotation_period', 'surface_water']);
 
   const handleNameFiltered = ({ target }) => setNameFiltered(target.value);
 
@@ -21,34 +21,56 @@ function AppProvider({ children }) {
 
   const handleValueInput = ({ target }) => setValueInput(target.value);
 
-  const handleApiFilter = (arrApiFilter) => {
-    let elementColumn = '';
-    const filterPlanet = arrApiFilter
-      ?.filter((element) => {
-        elementColumn = columnSelect;
-        switch (comparasionSelect) {
-        case 'maior que':
-          return Number(element[columnSelect]) > Number(valueInput);
-        case 'menor que':
-          return Number(element[columnSelect]) < Number(valueInput);
-        default:
-          return Number(element[columnSelect]) === Number(valueInput);
-        }
-      });
-    setApiFilter(filterPlanet);
+  const handleAddFilter = (arrApiFilter) => {
+    setApiFilter(arrApiFilter);
     setMultfilters((prev) => [...prev,
       { columnSelect, comparasionSelect, valueInput }]);
-    const newOptions = columnOptions.filter((element) => element !== elementColumn);
-    setColumnOptions(newOptions);
-    setColumnSelect(newOptions[0]);
   };
 
-  const filterCallback = useCallback(handleApiFilter, [columnSelect, columnOptions,
+  const handleClickDeleteFilter = (column) => {
+    setApiFilter(apiResults);
+    setColumnOptions((prev) => [...prev, column]);
+    const newMultfilters = multfilters
+      .filter((element) => element.columnSelect !== column);
+    setMultfilters(newMultfilters);
+  };
+
+  useEffect(() => {
+  //   const handleApiFilter = (arrApiFilter) => {
+    if (multfilters.length === 0) {
+      setApiFilter([]);
+    } else {
+      multfilters?.forEach((e) => {
+        let elementColumn = '';
+        const test = apiFilter?.filter((element) => {
+          elementColumn = e.columnSelect;
+          switch (e.comparasionSelect) {
+          case 'maior que':
+            return Number(element[e.columnSelect]) > Number(e.valueInput);
+          case 'menor que':
+            return Number(element[e.columnSelect]) < Number(e.valueInput);
+          default:
+            return Number(element[e.columnSelect]) === Number(e.valueInput);
+          }
+        });
+        const newOptions = columnOptions.filter((element) => element !== elementColumn);
+        setColumnOptions(newOptions);
+        setColumnSelect(newOptions[0]);
+        setApiFilter(test);
+      });
+    }
+  }, [multfilters]);
+
+  const filterCallback = useCallback(handleAddFilter, [columnSelect,
     comparasionSelect, valueInput]);
 
-  // useEffect(() => {
-  //   setColumnOptions(columnOptions[0]);
-  // }, [columnOptions]);
+  const handleRemoveFilters = () => {
+    setMultfilters([]);
+    setColumnOptions(['population', 'orbital_period',
+      'diameter', 'rotation_period', 'surface_water']);
+    setColumnSelect('population');
+    setApiFilter([]);
+  };
 
   useEffect(() => {
     const requestAPI = async () => {
@@ -80,9 +102,13 @@ function AppProvider({ children }) {
     handleColumnSelect,
     handleComparasionSelect,
     handleValueInput,
+    handleClickDeleteFilter,
+    handleRemoveFilters,
   }), [apiResults, nameFiltered, columnSelect,
     comparasionSelect, valueInput, apiFilter,
-    multfilters, columnOptions, filterCallback]);
+    multfilters, columnOptions, filterCallback,
+    handleClickDeleteFilter, handleRemoveFilters,
+  ]);
   return (
     <AppContext.Provider value={ contexto }>
       {children}
