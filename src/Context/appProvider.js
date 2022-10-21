@@ -1,19 +1,54 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import AppContext from './appContext';
 
 function AppProvider({ children }) {
-  // const [gender, setGender] = useState('');
   const [apiResults, setApiResults] = useState([]);
   const [nameFiltered, setNameFiltered] = useState('');
-  const options = ['population', 'orbital_period',
-    'diameter', 'rotation_period', 'surface_water'];
-  const [columnOptions, setColumnOptions] = useState(options);
   const [columnSelect, setColumnSelect] = useState('population');
   const [comparasionSelect, setComparasionSelect] = useState('maior que');
   const [valueInput, setValueInput] = useState(0);
   const [apiFilter, setApiFilter] = useState([]);
   const [multfilters, setMultfilters] = useState([]);
+  const [columnOptions, setColumnOptions] = useState(['population', 'orbital_period',
+    'diameter', 'rotation_period', 'surface_water']);
+
+  const handleNameFiltered = ({ target }) => setNameFiltered(target.value);
+
+  const handleColumnSelect = ({ target }) => setColumnSelect(target.value);
+
+  const handleComparasionSelect = ({ target }) => setComparasionSelect(target.value);
+
+  const handleValueInput = ({ target }) => setValueInput(target.value);
+
+  const handleApiFilter = (arrApiFilter) => {
+    let elementColumn = '';
+    const filterPlanet = arrApiFilter
+      ?.filter((element) => {
+        elementColumn = columnSelect;
+        switch (comparasionSelect) {
+        case 'maior que':
+          return Number(element[columnSelect]) > Number(valueInput);
+        case 'menor que':
+          return Number(element[columnSelect]) < Number(valueInput);
+        default:
+          return Number(element[columnSelect]) === Number(valueInput);
+        }
+      });
+    setApiFilter(filterPlanet);
+    setMultfilters((prev) => [...prev,
+      { columnSelect, comparasionSelect, valueInput }]);
+    const newOptions = columnOptions.filter((element) => element !== elementColumn);
+    setColumnOptions(newOptions);
+    setColumnSelect(newOptions[0]);
+  };
+
+  const filterCallback = useCallback(handleApiFilter, [columnSelect, columnOptions,
+    comparasionSelect, valueInput]);
+
+  // useEffect(() => {
+  //   setColumnOptions(columnOptions[0]);
+  // }, [columnOptions]);
 
   useEffect(() => {
     const requestAPI = async () => {
@@ -31,37 +66,6 @@ function AppProvider({ children }) {
     requestAPI();
   }, []);
 
-  const handleNameFiltered = ({ target }) => setNameFiltered(target.value);
-
-  const handleColumnSelect = ({ target }) => setColumnSelect(target.value);
-
-  const handleComparasionSelect = ({ target }) => setComparasionSelect(target.value);
-
-  const handleValueInput = ({ target }) => setValueInput(target.value);
-
-  const handleApiFilter = () => {
-    if (columnSelect.length > 0
-      || comparasionSelect.length > 0 || valueInput.length > 0) {
-      const filterPlanet = apiResults
-        ?.filter((element) => {
-          switch (comparasionSelect) {
-          case 'maior que':
-            return Number(element[columnSelect]) > Number(valueInput);
-          case 'menor que':
-            return Number(element[columnSelect]) < Number(valueInput);
-          default:
-            return Number(element[columnSelect]) === Number(valueInput);
-          }
-        });
-      const test = columnOptions.filter((e) => e !== columnSelect);
-      console.log(test);
-      setColumnOptions(test);
-      setMultfilters((prev) => [...prev,
-        { columnSelect, comparasionSelect, valueInput }]);
-      setApiFilter(filterPlanet);
-    }
-  };
-
   const contexto = useMemo(() => ({
     apiResults,
     nameFiltered,
@@ -71,14 +75,14 @@ function AppProvider({ children }) {
     apiFilter,
     multfilters,
     columnOptions,
+    filterCallback,
     handleNameFiltered,
     handleColumnSelect,
     handleComparasionSelect,
     handleValueInput,
-    handleApiFilter,
   }), [apiResults, nameFiltered, columnSelect,
     comparasionSelect, valueInput, apiFilter,
-    multfilters, columnOptions]);
+    multfilters, columnOptions, filterCallback]);
   return (
     <AppContext.Provider value={ contexto }>
       {children}

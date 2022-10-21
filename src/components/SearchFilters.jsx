@@ -1,11 +1,15 @@
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import AppContext from '../Context/appContext';
 
 function SearchFilters() {
   const { handleNameFiltered, NameFiltered, handleColumnSelect,
-    handleComparasionSelect, handleApiFilter, valueInput,
-    columnOptions,
+    handleComparasionSelect, filterCallback, valueInput,
+    apiResults, apiFilter, columnOptions,
     handleValueInput } = useContext(AppContext);
+
+  const apiResultsFiltered = useMemo(() => (apiFilter.length === 0 ? apiResults
+    : apiFilter), [apiFilter, apiResults]);
+
   return (
     <div>
       <div className="input-name-filtered">
@@ -66,7 +70,7 @@ function SearchFilters() {
         <button
           type="button"
           data-testid="button-filter"
-          onClick={ handleApiFilter }
+          onClick={ () => filterCallback(apiResultsFiltered) }
         >
           Filtrar
         </button>
