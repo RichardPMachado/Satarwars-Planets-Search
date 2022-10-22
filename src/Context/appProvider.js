@@ -12,6 +12,9 @@ function AppProvider({ children }) {
   const [valueInput, setValueInput] = useState(0);
   const [apiFilter, setApiFilter] = useState([]);
   const [multfilters, setMultfilters] = useState([]);
+  // const [OrdenaFilter, setOrdenaFilter] = useState([]);
+  const [columnSortRadio, setColumnSortRadio] = useState([]);
+  const [columnSort, setColumnSort] = useState('population');
 
   const handleNameFiltered = ({ target }) => setNameFiltered(target.value);
 
@@ -20,6 +23,34 @@ function AppProvider({ children }) {
   const handleComparasionSelect = ({ target }) => setComparasionSelect(target.value);
 
   const handleValueInput = ({ target }) => setValueInput(target.value);
+
+  const handleColumnSortRadio = ({ target }) => setColumnSortRadio(target.value);
+
+  const handleColumnSort = ({ target }) => setColumnSort(target.value);
+
+  const handleSort = () => {
+    let aux = [];
+    let newArr = [];
+    apiResults.forEach((e) => {
+      if (e[columnSort] === 'unknown') {
+        aux = [...aux, e];
+      }
+      if (e[columnSort] !== 'unknown') {
+        newArr = [...newArr, e];
+      }
+    });
+    console.log(aux, newArr);
+    if (columnSortRadio === 'ASC') {
+      const arr = newArr.sort((a, b) => (a[columnSort] - b[columnSort]));
+      setApiResults([...arr, ...aux]);
+      setMultfilters([]);
+    }
+    if (columnSortRadio === 'DESC') {
+      const arr = newArr.sort((a, b) => (b[columnSort] - a[columnSort]));
+      setApiResults([...arr, ...aux]);
+      setMultfilters([]);
+    }
+  };
 
   const handleAddFilter = (arrApiFilter) => {
     setApiFilter(arrApiFilter);
@@ -104,10 +135,14 @@ function AppProvider({ children }) {
     handleValueInput,
     handleClickDeleteFilter,
     handleRemoveFilters,
+    handleSort,
+    handleColumnSortRadio,
+    handleColumnSort,
   }), [apiResults, nameFiltered, columnSelect,
     comparasionSelect, valueInput, apiFilter,
     multfilters, columnOptions, filterCallback,
     handleClickDeleteFilter, handleRemoveFilters,
+    handleSort,
   ]);
   return (
     <AppContext.Provider value={ contexto }>
