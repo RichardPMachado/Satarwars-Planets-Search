@@ -1,5 +1,5 @@
 import { useContext, useMemo } from 'react';
-import AppContext from '../Context/appContext';
+import AppContext from '../Context/AppContext';
 
 function SearchFilters() {
   const { handleNameFiltered, NameFiltered,

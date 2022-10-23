@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import AppContext from '../Context/appContext';
+import AppContext from '../Context/AppContext';
 
 function Table() {
   const { nameFiltered, apiFilter, apiResults,
@@ -81,4 +81,4 @@ function Table() {
   );
 }
 
-export default React.memo(Table);
+export default Table;

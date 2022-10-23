@@ -1,18 +1,19 @@
 import { useContext } from 'react';
-import AppContext from '../Context/appContext';
+import AppContext from '../Context/AppContext';
 
-export default function MultFilter() {
+function MultFilter() {
   const { multfilters, handleClickDeleteFilter } = useContext(AppContext);
   return (
     <div>
       <ul>
         {multfilters.length > 0
-        && multfilters.map(({
+        && multfilters?.map(({
           columnSelect, comparasionSelect, valueInput,
         }) => (
           <li data-testid="filter" key={ `${columnSelect}-${valueInput}` }>
             {`${columnSelect} ${comparasionSelect} ${valueInput} `}
             <button
+              id="btn-da-madruga"
               type="button"
               onClick={ () => handleClickDeleteFilter(columnSelect) }
             >
@@ -24,3 +25,5 @@ export default function MultFilter() {
     </div>
   );
 }
+
+export default MultFilter;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
-import AppContext from './appContext';
+import AppContext from './AppContext';
 
 function AppProvider({ children }) {
   const [apiResults, setApiResults] = useState([]);
@@ -108,7 +108,7 @@ function AppProvider({ children }) {
       try {
         const response = await fetch('https://swapi.dev/api/planets');
         const { results } = await response.json();
-        setApiResults(results?.map((e) => {
+        setApiResults(results.map((e) => {
           delete e.residents;
           return e;
         }));
