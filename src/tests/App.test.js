@@ -97,51 +97,24 @@ describe('testes para a aplicação', () => {
     })
 
     const ascRadio = screen.getByTestId("column-sort-input-asc");
-    const descRadio = screen.getByTestId("column-sort-input-desc");
     const population = screen.getByTestId("column-sort");
-    const btnFilterAsc = screen.getByRole('button', {  name: /ordenar/i});
-
+    const btnFilterSort = screen.getByRole('button', {  name: /ordenar/i});
+    
     userEvent.selectOptions(population, ["population"]);
     userEvent.click(ascRadio);
-    userEvent.click(btnFilterAsc);
-
-    const planetsAsc = screen.findAllByTestId('planet-name');
-    expect(planetsAsc[0]).toBe('Yavin IV');
-    console.log('ugigi', planetsAsc)
-
-    userEvent.click(descRadio);
-    userEvent.click(btnFilterAsc);
-    expect(planetsAsc[0]).toBe('Coruscant');
-
-
+    userEvent.click(btnFilterSort);
     
+    const planetsAsc = await screen.findAllByTestId('planet-name');
+    expect(planetsAsc[0].innerHTML).toBe('Yavin IV');
+    console.log('ugigi', planetsAsc)
+    
+    const descRadio = screen.getByTestId("column-sort-input-desc");
+    userEvent.selectOptions(population, ["population"]);
+    userEvent.click(descRadio);
+    userEvent.click(btnFilterSort);
+    
+    const planetsDesc = await screen.findAllByTestId('planet-name');
+    expect(planetsDesc[0].innerHTML).toBe('Coruscant');
 
-    // expect()
-
-  //   const quarenta = 40;
-  //   const selectColumn = screen.getByTestId('column-filter');
-  //   const comparision = screen.getByTestId('comparison-filter')
-  //   const valueFilter = screen.getByTestId('value-filter');
-  //   const buttonFilter = screen.getByTestId('button-filter');
-  //   userEvent.selectOptions(selectColumn, ['diameter']);
-  //   userEvent.selectOptions(comparision, ['menor que']);
-  //   userEvent.type(valueFilter, 12500);
-  //   expect(comparision).toHaveValue('menor que');
-  //   userEvent.click(buttonFilter)
-  //   waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(7))
-  //   userEvent.clear(valueFilter)
-  //   userEvent.selectOptions(selectColumn, ['surface_water']);
-  //   userEvent.selectOptions(comparision, ['menor que']);
-  //   userEvent.type(valueFilter, quarenta);
-  //   expect(comparision).toHaveValue('menor que');
-  //   userEvent.click(buttonFilter)
-  //   waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(5))
-  //   userEvent.clear(valueFilter)
-  //   const btnDelete = await screen.findAllByRole('button', {  name: /excluir/i})
-  //   userEvent.click(btnDelete[0])
-  //   waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(6))
-  //   userEvent.click(btnDelete[0])
-  //   waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(10))
-  //   userEvent.clear(valueFilter)
-  })
+  });
 })
