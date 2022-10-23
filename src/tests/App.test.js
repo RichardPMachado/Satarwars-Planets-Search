@@ -6,6 +6,7 @@ import renderWithContext from "./renderWithContext";
 import userEvent from "@testing-library/user-event";
 import { act } from 'react-dom/test-utils';
 
+afterEach(() => jest.clearAllMocks());
 describe('testes para a aplicação', () => {
   it("Verifica se certos filtros funcionam corretamente", async () => {
     global.fetch = jest.fn(() =>
@@ -84,37 +85,5 @@ describe('testes para a aplicação', () => {
   
     expect(lastTableElement).toBeInTheDocument();
     expect(tableElement).not.toBeInTheDocument();
-  });
-});
-
-  describe('testes para a aplicação', () => {
-  it('Verifica funcionalidade dos filtros e remoçoes de filtros', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue(testData)
-    })
-    await act(async () => {
-      renderWithContext(<App />)
-    })
-
-    const ascRadio = screen.getByTestId("column-sort-input-asc");
-    const population = screen.getByTestId("column-sort");
-    const btnFilterSort = screen.getByRole('button', {  name: /ordenar/i});
-    
-    userEvent.selectOptions(population, ["population"]);
-    userEvent.click(ascRadio);
-    userEvent.click(btnFilterSort);
-    
-    const planetsAsc = await screen.findAllByTestId('planet-name');
-    expect(planetsAsc[0].innerHTML).toBe('Yavin IV');
-    console.log('ugigi', planetsAsc)
-    
-    const descRadio = screen.getByTestId("column-sort-input-desc");
-    userEvent.selectOptions(population, ["population"]);
-    userEvent.click(descRadio);
-    userEvent.click(btnFilterSort);
-    
-    const planetsDesc = await screen.findAllByTestId('planet-name');
-    expect(planetsDesc[0].innerHTML).toBe('Coruscant');
-
   });
 })
